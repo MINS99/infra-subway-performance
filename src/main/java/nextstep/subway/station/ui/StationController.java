@@ -4,6 +4,7 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,12 @@ public class StationController {
     public ResponseEntity deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "/stations/page", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<StationResponse>> showStationsByPaging(@RequestParam(name = "offset", defaultValue = "0") Long offset,
+                                                                      Pageable pageable) {
+        return ResponseEntity.ok().body(stationService.findAllStationsByPaging(offset, pageable));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
